@@ -1,23 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import {useDispatch, useSelector} from "react-redux"
-import { adduser } from './reduxSlices/userSlice'
+import { adduser, deleteuser, removealluser } from './reduxSlices/userSlice'
+import { fakeuser } from './index.js'
+import {MdDeleteForever} from "react-icons/md" 
+import Todo from './components/Todo.jsx'
+import MiniTodo from './components/MiniTodo.jsx'
 
 function App() {
+
   const dispatch = useDispatch()
-  function handelclick(){
-    dispatch(adduser());
+  function handelclick(payload){
+    dispatch(adduser(payload))
   }
-  const statevalue = useSelector((state)=> state.users.value);
+  function handeldeleteuser(name){
+    dispatch(deleteuser(name))
+  
+  }
+  const handleallusers= ()=>{
+    console.log("removealuser")
+    dispatch(removealluser())
+  }
+
+  const statevalue = useSelector((state)=> state.users);
+
   return (  
     <>
-    <h3>
-    <h3>{statevalue}</h3>
-      <button onClick={handelclick}>increment</button>
-      I am live now
-    </h3>
+     <button onClick={()=>handelclick(fakeuser())}>increment</button>
+    {statevalue.map((name , index)=>{
+      return  <><li key={index}>{name} 
+            <button className='deletecolor ' onClick={()=>handeldeleteuser(name)}>
+              <MdDeleteForever/>
+            </button>
+      </li>
+    </>
+    }
+    )}
+  <button onClick={handleallusers}>Clear All</button>
+  <Todo/>
+  <MiniTodo/>
     </>
   )
 }
